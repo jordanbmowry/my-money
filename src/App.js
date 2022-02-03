@@ -5,6 +5,7 @@ import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 import Signup from './pages/signup/Signup';
 function App() {
+  console.log(process.env);
   return (
     <div className='App'>
       <Router>
