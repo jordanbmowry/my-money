@@ -1,12 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useFirestore } from '../../hooks/useFireStore';
 
-export default function TransactionForm() {
-  const initialFormState = {
-    name: '',
-    amount: '',
-  };
+export default function TransactionForm(props) {
+  const initialFormState = useMemo(
+    () => ({
+      name: '',
+      amount: '',
+    }),
+    []
+  );
 
   const [formData, setFormData] = useState(initialFormState);
+  const { addDocument, response } = useFirestore('transactions');
 
   const handleFormChange = ({ target }) => {
     const { name, value } = target;
@@ -19,8 +24,15 @@ export default function TransactionForm() {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    console.log({ formData });
+    addDocument({ ...formData, uid: props.uid });
   };
+
+  useEffect(() => {
+    if (response.success) {
+      setFormData(initialFormState);
+    }
+  }, [initialFormState, response.success]);
+
   return (
     <>
       <h3>Add a Transaction</h3>
