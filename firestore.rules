@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /transactions/{document=**} {
+      // allow read, write;
+      // allow read, create, delete, update;
+
+      // only allow if user is authenticated
+      allow create: if request.auth != null;
+      // only allow user to read and delete if the uid matches the document uid
+      allow read, delete: if request.auth.uid == resource.data.uid;
+    }
+  }
+}
